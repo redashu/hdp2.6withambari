@@ -69,3 +69,21 @@ yum install java-headless -y
  
  ```
  
+## start ambari setup
+
+```
+ ambari-server setup 
+ ```
+ 
+ ## do one more step 
+ ```
+  ambari-server setup --jdbc-db=mysql --jdbc-driver=/usr/share/java/mysql-connector-java.jar
+  ```
+  
+  ## start ambari
+   
+   ```
+   ambari-server  start
+   
+   ```
+   

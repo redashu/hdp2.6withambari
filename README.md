@@ -1,89 +1,107 @@
-# HDP 2.6 multinode setup using ambari on amazon ec2 ami 
+# Apache Ranger
 
-## Need to done on each node 
+##  ABout 
+### Is Framework to enable monitoring and data access control in Big Data hadoop
 
-### set hostname 
+## History of apache ranger
+
+<img src="ranger.png">
+
+## Ranger architecture 
+
+<img src="arch.png">
+
+## Working 
+
+### ranger uses plugin architecture to manager authorization and access control for data security in various hadoop component.
+
+### Example with Hive
+
+<img src="hiveranger.png">
+
+## here is the list of Ranger supported plugins 
+
+<img src="plugins.png">
+
+# INstalling Ranger using Ambari 
+
+## install and configure your database server out of  mysql/postgre/oracle/mariadb etc.
+
+### I am using mariadb server
+
+## Installing and configuration of mariadb server for ranger 
 
 ```
-hostnamectl set-hostname  ec2-3-236-98-216.compute-1.amazonaws.com
-```
+yum install mariadb-server
 
-### configure  local DNS 
-
-```
-[root@ec2-3-236-98-216 ~]# cat  /etc/hosts
-127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-::1         localhost6 localhost6.localdomain6
-
-172.31.66.4  ec2-3-236-98-216.compute-1.amazonaws.com
-172.31.74.29  ec2-18-206-214-184.compute-1.amazonaws.com
-172.31.71.69  ec2-3-236-78-59.compute-1.amazonaws.com
+systemctl enable --now mariadb
 
 ```
 
-### disable firewalld and selinux 
+## setup database root password 
+
 ```
-setenfoce 0
-systemctl disable --now firewalld
 ```
 
-### installing NTP 
+## loging to db
+
 ```
-yum install -y ntp 
- systemctl enable --now ntpd
+[root@master1 ~]# mysql -u root -p
+Enter password: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 4
+Server version: 5.5.65-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> 
+
+```
+
+## create user and give permission to  ranger user
+
+```
+CREATE USER 'rangerdba'@'localhost' IDENTIFIED BY 'rangerdba';
+
+GRANT ALL PRIVILEGES ON *.* TO 'rangerdba'@'localhost';
+
+CREATE USER 'rangerdba'@'%' IDENTIFIED BY 'rangerdba';
+
+GRANT ALL PRIVILEGES ON *.* TO 'rangerdba'@'%';
+
+GRANT ALL PRIVILEGES ON *.* TO 'rangerdba'@'localhost' WITH GRANT OPTION;
+
+GRANT ALL PRIVILEGES ON *.* TO 'rangerdba'@'%' WITH GRANT OPTION;
+
+FLUSH PRIVILEGES;
+
+```
+
+## test login 
+
+```
+[root@master1 ~]# mysql -u rangerdba -prangerdba
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 5
+Server version: 5.5.65-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> 
+
+```
+
+## install JDBC and setup ambari 
+
+```
+ yum install mysql-connector-java*
  
-```
-### Installing java jdk8 
-```
-yum install java-1.8.0-openjdk
-
-```
-### installing libtirpc
-
-```
-yum install libtirpc-devel
-
-```
-
-### install addition packages
-```
-yum install wget -y
-yum install mysql-connector-java -y
-yum install java-headless -y
-
-```
-
-### increase inode limit 
-```
- ulimit  -n  10000
- 
- ```
- ### setup ambari repo 
- ```
- wget -O  /etc/yum.repos.d/ambari.repo http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.6.2.2/ambari.repo
- 
- ```
- # Ambari Server setup  on Manager Node only 
- ```
- [root@ec2-3-236-98-216 ~]# yum  install ambari-server
- 
- ```
- 
-## start ambari setup
-
-```
- ambari-server setup 
- ```
- 
- ## do one more step 
- ```
   ambari-server setup --jdbc-db=mysql --jdbc-driver=/usr/share/java/mysql-connector-java.jar
-  ```
   
-  ## start ambari
-   
-   ```
-   ambari-server  start
-   
-   ```
-   
+ ```
+ 
+ 

@@ -41,6 +41,7 @@ systemctl enable --now mariadb
 ## setup database root password 
 
 ```
+mysql_secure_installation
 ```
 
 ## loging to db
@@ -103,5 +104,24 @@ MariaDB [(none)]>
   ambari-server setup --jdbc-db=mysql --jdbc-driver=/usr/share/java/mysql-connector-java.jar
   
  ```
+ 
+ ## OPen ambari dashboard
+ 
+ ### add service 
+ 
+ <img src="addservice.png">
+ 
+ ### select ranger 
+ 
+ <img src="select.png">
+ 
+ ### confirm prerequiste 
+ 
+ <img src="confirm.png">
+ 
+ ###  choose node
+ 
+ <img src="choosenode.png">
+ 
  
  

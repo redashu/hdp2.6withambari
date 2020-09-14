@@ -98,3 +98,11 @@ yum install java-headless -y
    
    ```
    
+   ## Error with SSL via to register with ambari server
+   
+   ```
+   # vi /etc/ambari-agent/conf/ambari-agent.ini
+force_https_protocol=PROTOCOL_TLSv1_2
+
+```
+

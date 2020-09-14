@@ -33,6 +33,17 @@ yum install -y ntp
  systemctl enable --now ntpd
  
 ```
+## a common shell script 
+```
+setenforce 0
+echo "vm.swappiness  = 10" >>/etc/sysct.conf
+yum install ntp -y
+systemctl enable --now ntpd
+echo "echo never >/sys/kernel/mm/transparent_hugepage/enabled"  >>/etc/rc.local
+echo "echo never  >/sys/kernel/mm/transparent_hugepage/defrag" >>/etc/rc.local
+
+```
+
 ### Installing java jdk8 
 ```
 yum install java-1.8.0-openjdk
